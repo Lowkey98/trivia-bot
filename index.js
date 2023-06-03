@@ -1,17 +1,23 @@
-const axios = require('axios');
-const apiUrl = 'https://the-trivia-api.com/api/questions/';
+// Log in to Discord with your client's token
+const { Client, GatewayIntentBits } = require('discord.js');
+const { CommandHandler } = require('djs-commander');
+const { token } = require('./config.json');
+const path = require('path');
 
-axios.get(apiUrl)
-  .then(response => {
-    const questionData = response.data[0];
-    const question = questionData.question;
-    const correctAnswer = questionData.correctAnswer;
-    const incorrectAnswers = questionData.incorrectAnswers;
-    const optionsToDisplay = incorrectAnswers.slice(0, 2).concat(correctAnswer).sort( (a, b) => 0.5 - Math.random() );
-    console.log('question' , question);
-    console.log('optionsToDisplay' , optionsToDisplay);
-    console.log('correctAnswer' , correctAnswer);
-  })
-  .catch(error => {
-    console.error('Failed to fetch question data:', error);
-  });
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
+  ],
+});
+
+
+new CommandHandler({
+  client, // Discord.js client object | Required by default
+  commandsPath: path.join(__dirname, 'commands'), // The commands directory
+  eventsPath: path.join(__dirname, 'events'), // The events directory
+
+});
+client.login(token);
